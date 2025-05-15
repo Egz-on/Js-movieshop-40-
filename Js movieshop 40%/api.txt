@@ -1,0 +1,18 @@
+get movies
+https://api.themoviedb.org/3/discover/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0
+
+
+get movies (page)
+https://api.themoviedb.org/3/discover/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&page=1
+
+
+search movie by title
+https://api.themoviedb.org/3/search/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&query=VALUE
+
+
+get movie by id
+https://api.themoviedb.org/3/movie/MOVIE_ID_INT?api_key=3e52e2f5350ae60de5e2fc58e818d2a0
+
+
+Thumbnails URL: http://image.tmdb.org/t/p/w500
+

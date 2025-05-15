@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Movie Shop</title>
+    <link rel="stylesheet" href="/CSS/output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header class="h-24 flex items-center bg-slate-200">
+        <div class="container mx-auto flex items-center justify-between">
+            <span class="text-3xl text-gray-500"><i class="fa-solid fa-film"></i> Movie Shop</span>
+            <nav>
+                <ul class="flex items-center gap-3">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="cart.html">Cart (0)</a></li>
+                    <div class="auth flex items-center gap-3">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="dashboard.html?action=logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+                    </div>
+                    <div class="guest flex items-center gap-3">
+                        <a href="register.html">Register</a>
+                        <a href="login.html">Login</a>
+                    </div>
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+
+    <section class="py-20">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <div class="w-[500px]">
+                    <input type="search" placeholder="Search by title"  class=" w-[400px] border border-gray-500 rounded-md px-6 py-2 mr-3"/>
+                    <a href="shop.html" class="underline">Clear</a>
+                </div>
+                <div class=" flex justify-center items-center">
+                <button class="border border-gray-500 rounded-md px-2 py-1  text-white bg-gray-600 hover:bg-gray-500" id="prev-btn" >Prev</i></button>
+                <p class="mx-4" id="page">1</p>
+                <button class="border border-gray-500 rounded-md px-2 py-1  text-white bg-gray-600 hover:bg-gray-500" id="next-btn" >Next</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-6 my-12" id="movies">
+                
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-slate-200">
+        <div class="container mx-auto h-16 flex justify-between items-center">
+                <p> Copyrights &copy; Movie Shop , 2024</p>
+                <p>Developer PP Team</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import {authlinks} from "./Modules/Apps.js"
+        const isloggedin = localStorage.getItem('isloggedin') ?? false 
+
+            const movies_div = document.getElementById('movies')
+            let page = 1
+            const page_div = document.getElementById('page')
+            page_div.innerHTML = page
+            
+            const prev_btn = document.getElementById('prev-btn')
+            const next_btn = document.getElementById('next-btn')
+            
+            const search = document.querySelector('input[type="search"]')
+            
+            // update navigation links
+            authlinks(isloggedin)
+            
+
+
+                // fetch first page movie
+                fetchMovie(`https://api.themoviedb.org/3/discover/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&page=${page}`)
+
+
+                // handle prev and next buttons
+                prev_btn.addEventListener('click', e => {
+                    if(page > 1 ) page--
+                    page_div.innerHTML = page
+                    
+                    fetchMovie(`https://api.themoviedb.org/3/discover/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&page=${page}`)
+                })
+                next_btn.addEventListener('click', e => {
+                    page++
+                    page_div.innerHTML = page
+
+                    fetchMovie(`https://api.themoviedb.org/3/discover/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&page=${page}`)
+                })
+
+                // handle search 
+                search.addEventListener('keyup' , e => {
+                    switch (e.keyCode) {
+                        case 13:
+                        fetchMovie(`https://api.themoviedb.org/3/search/movie?api_key=3e52e2f5350ae60de5e2fc58e818d2a0&query=${e.target.value}`)
+                        break
+                    }
+                })
+
+            //  movies 
+                function fetchMovie(url) {
+                fetch (url)
+                .then (resp => resp.json() )
+                .then (resp => {
+                    const movies = resp.results
+                    let movies_html = ''
+
+                    for (let movie of movies) {
+                        const image = movie.backdrop_path !== null ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}` : 'https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg'
+
+                        movies_html += `
+                        <div class="border border-gray-200 rounded-md p-4">
+                            <div class=" h-52 overflow-y-hidden ">
+                                <img src="${image}" />
+                            </div>
+                            <div class="flex items-center justify-between ">
+                                <div>
+                                    <h3 class="">${movie.title}</h3>
+                                    <p>${movie.release_date}</p>
+                                </div>
+                                <a href="movie.html?id=${movie.id}" class="w-[50px] text-center py-2 text-gray-200 border border-gray-200 hover:border-red-200 hover:text-red-400"><i class="fa-solid fa-arrow-right"></i></a>
+
+                            </div>
+                        </div>
+                        `
+                    }
+                    
+                    movies_div.innerHTML = movies_html
+                })}
+                
+                
+        
+    
+    </script>
+</body>
+</html>
